@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.66 59.66">
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <g>
+        <line x1="20.18" y1="1.08" x2="20.18" y2="59.66" fill="none" stroke="#ed3d24" stroke-miterlimit="10"/>
+        <polygon points="16.09 4.4 16.83 5.08 20.18 1.47 23.54 5.08 24.27 4.4 20.18 0 16.09 4.4" fill="#ed3d24"/>
+      </g>
+      <g>
+        <line x1="1.08" y1="29.83" x2="59.66" y2="29.83" fill="none" stroke="#ed3d24" stroke-miterlimit="10"/>
+        <polygon points="4.4 33.92 5.08 33.19 1.47 29.83 5.08 26.48 4.4 25.74 0 29.83 4.4 33.92" fill="#ed3d24"/>
+      </g>
+    </g>
+  </g>
+</svg>
