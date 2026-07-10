@@ -1,12 +1,15 @@
+import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
+import HappyClients from './components/HappyClients.jsx'
+import Works from './components/Works.jsx'
 
 export default function App() {
   return (
     <>
+      <Navbar />
       <Hero />
-      {/* Next sections are built later. This spacer keeps the page vertically
-          scrollable so the hero's scroll-down affordance leads somewhere. */}
-      <section className="after-hero" aria-hidden="true" />
+      <HappyClients />
+      <Works />
     </>
   )
 }

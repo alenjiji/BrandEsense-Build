@@ -72,55 +72,67 @@ img {
   }
 }
 
-.hero-track {
+.hero-stack {
   position: absolute;
   inset: 0;
   z-index: 2;
-  display: flex;
-  width: 500vw;
-  height: 100%;
-  will-change: transform;
 }
 
 .hero-slide {
-  position: relative;
-  width: 100vw;
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  flex: 0 0 100vw;
   overflow: hidden;
+  will-change: opacity;
 }
 
 /* ---------------------------------------------------------------- navbar */
 .navbar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 40;
+  z-index: 50;
   width: 100%;
-  padding: 1.7vw 3.4vw 0;
+  padding: 0 4vw;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  pointer-events: none;
+}
+
+.navbar > * {
+  pointer-events: auto;
+}
+
+/* logo hangs flush from the very top of the page */
+.nav-logo {
+  display: block;
+  margin-top: 0;
+  line-height: 0;
 }
 
 .nav-logo img {
-  width: clamp(150px, 13vw, 232px);
+  width: clamp(170px, 14vw, 262px);
   height: auto;
+  display: block;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: clamp(1.4rem, 3vw, 3.6rem);
-  padding-top: 0.6vw;
+  gap: clamp(1.4rem, 3vw, 3.4rem);
+  /* vertically centre the links against the hanging logo */
+  margin-top: clamp(1.4rem, 2.3vw, 2.6rem);
 }
 
+/* non-highlighted links: Inter Light 20pt */
 .nav-link {
-  font-size: clamp(0.95rem, 1.1vw, 1.35rem);
-  font-weight: 500;
+  font-size: clamp(0.9rem, 1.04vw, 1.25rem);
+  font-weight: 300;
   color: var(--grey-soft);
   text-decoration: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   transition: color 0.25s ease;
 }
 
@@ -128,9 +140,10 @@ img {
   color: var(--ink);
 }
 
+/* highlighted link: Inter Medium, red */
 .nav-link.is-active {
   color: var(--red);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* ----------------------------------------------------------------- slide */
@@ -143,6 +156,17 @@ img {
 .slide-copy {
   position: absolute;
   z-index: 38;
+}
+
+/* BG paper texture over the imagery — above all images/decor (stage z-index),
+   below the text (z-index 38), so copy always stays crisp on top */
+.slide-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 37;
+  background: url('/bg/BG.webp') center / cover no-repeat;
+  opacity: 0.84;
+  pointer-events: none;
 }
 
 .slide-copy--left {
@@ -191,8 +215,9 @@ img {
   color: var(--red);
 }
 
+/* intro title = 103.28pt (≈1.67× the 61.76pt brand title) */
 .headline--intro {
-  font-size: clamp(2.6rem, 5.7vw, 6.2rem);
+  font-size: clamp(2.8rem, 7.1vw, 7.8rem);
 }
 
 .headline--brand {
@@ -307,8 +332,9 @@ img {
   top: 50%;
   transform: translateY(-50%);
   z-index: 38;
-  width: 36vw;
-  max-width: 640px;
+  /* the brand lockup is 528.46px wide by spec (shrinks on small screens) */
+  width: 528px;
+  max-width: 42vw;
 }
 
 .intro-logo {
@@ -316,13 +342,14 @@ img {
   height: auto;
 }
 
+/* "Commitment is everything. — Brand Esense" — Inter ExtraBold */
 .intro-quote {
   margin-top: 1.6vw;
   color: var(--grey);
-  font-weight: 500;
+  font-weight: 800;
   font-size: clamp(1rem, 1.67vw, 2.1rem);
   line-height: 1.2;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .intro-cta {
@@ -433,10 +460,337 @@ img {
   }
 }
 
-/* --------------------------------------------------------- next section */
-.after-hero {
-  min-height: 100vh;
-  background: var(--bg);
+/* ========================================================== clients section */
+.clients {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #fefeff;
+  isolation: isolate;
+}
+
+.clients-copy {
+  position: absolute;
+  left: 3.4vw;
+  top: 30%;
+  z-index: 30;
+  max-width: 32vw;
+}
+
+.clients-sub {
+  margin-top: 1.6vw;
+  color: var(--grey);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 1.15vw, 1.35rem);
+  line-height: 1.5;
+  max-width: 22vw;
+}
+
+/* framing graphics */
+.clients-arrow {
+  position: absolute;
+  left: 12%;
+  top: 12%;
+  width: 15vw;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.clients-circle {
+  position: absolute;
+  right: 8vw;
+  top: 13%;
+  width: 5vw;
+  z-index: 4;
+  pointer-events: none;
+  animation: floatY 7s ease-in-out infinite;
+}
+
+.clients-cross {
+  position: absolute;
+  width: 2.6vw;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.clients-cross--1 {
+  left: 45%;
+  top: 16%;
+}
+
+.clients-cross--2 {
+  left: 30%;
+  bottom: 14%;
+}
+
+/* the orbit */
+.orbit {
+  position: absolute;
+  left: 63%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: min(46vw, 74vh);
+  height: min(46vw, 74vh);
+  z-index: 10;
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  animation: spin 55s linear infinite;
+}
+
+.orbit-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--grey-soft);
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.1vw, 1.3rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.orbit-chip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: min(12vw, 19vh);
+  height: min(7vw, 11vh);
+  background: #fff;
+  border: 1px solid #eeeeec;
+  border-radius: 12px;
+  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1% 1.4%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.orbit-chip img {
+  max-width: 82%;
+  max-height: 62%;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.72;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.orbit-chip:hover {
+  transform: translate(-50%, -50%) translateY(-6px);
+  box-shadow: 0 24px 44px -20px rgba(0, 0, 0, 0.35);
+}
+
+.orbit-chip:hover img {
+  filter: none;
+  opacity: 1;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================ works section */
+.works {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #fefeff;
+  isolation: isolate;
+}
+
+/* left display heading */
+.works-head {
+  position: absolute;
+  left: 3.4vw;
+  top: 17%;
+  z-index: 30;
+  max-width: 34vw;
+  pointer-events: none;
+}
+
+.works-head .headline--brand {
+  font-size: clamp(1.5rem, 3vw, 3.3rem);
+  line-height: 1.02;
+}
+
+/* right credit copy */
+.works-desc {
+  position: absolute;
+  right: 3.4vw;
+  bottom: 16%;
+  z-index: 30;
+  max-width: 24vw;
+  color: var(--grey);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 1.15vw, 1.35rem);
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* framing arrows (reused brand graphics) */
+.works-arrow-top {
+  position: absolute;
+  left: 8%;
+  top: 6%;
+  width: 18vw;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.works-arrow-bottom {
+  position: absolute;
+  left: 49%;
+  bottom: -2%;
+  width: 38vw;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* directional cues beside the strip */
+.works-side {
+  position: absolute;
+  top: 46%;
+  z-index: 25;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.works-side--left {
+  left: 6vw;
+}
+
+.works-side--right {
+  right: 6vw;
+}
+
+.works-side svg {
+  display: block;
+  width: clamp(48px, 4vw, 74px);
+  height: auto;
+  transition: transform 0.25s ease;
+}
+
+.works-side--right:hover svg {
+  transform: translateX(4px);
+}
+
+.works-side--left:hover svg {
+  transform: scaleX(-1) translateX(4px);
+}
+
+/* coverflow */
+.cf-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.cf-item {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+  will-change: transform, opacity;
+  cursor: pointer;
+}
+
+.cf-item.is-center {
+  cursor: default;
+}
+
+.cf-item img {
+  height: min(58vh, 42vw);
+  width: auto;
+  display: block;
+  border-radius: 3px;
+  box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.45);
+}
+
+.cf-item.is-center img {
+  box-shadow: 0 40px 80px -32px rgba(0, 0, 0, 0.55);
+}
+
+/* controls */
+.works-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 5vh;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.cf-nav {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--grey);
+  padding: 0 0.3rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.cf-nav:hover {
+  color: var(--red);
+  transform: scale(1.15);
+}
+
+.cf-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cf-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(99, 100, 102, 0.32);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.cf-dot:hover {
+  background: rgba(99, 100, 102, 0.6);
+}
+
+.cf-dot.is-active {
+  background: var(--red);
+  transform: scale(1.35);
+}
+
+@media (max-width: 860px) {
+  .works-head {
+    max-width: 84vw;
+    top: 14%;
+  }
+  .works-desc {
+    display: none;
+  }
+  .cf-item img {
+    height: 46vh;
+  }
 }
 
 /* ------------------------------------------------------------ responsive */

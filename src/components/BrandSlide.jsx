@@ -42,9 +42,15 @@ export default function BrandSlide({
         <Heading lines={heading} active={active} className="headline--brand" />
       </div>
 
-      {/* right: credit block (lowered on slides flagged descLow, e.g. Prasad) */}
+      {/* right: credit block — placed per-slide (top / width in the data) so it
+          always sits in a clear zone and never overlaps the imagery */}
       <motion.div
-        className={`slide-copy slide-copy--right${slide.descLow ? ' is-low' : ''}`}
+        className="slide-copy slide-copy--right"
+        style={{
+          top: desc.top,
+          bottom: desc.bottom,
+          maxWidth: desc.width,
+        }}
         initial={{ opacity: 0, x: 30 }}
         animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
         transition={{ duration: 0.9, delay: active ? 0.5 : 0, ease: [0.22, 1, 0.36, 1] }}

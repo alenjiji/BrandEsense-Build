@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { slides } from '../data/slides.js'
-import Navbar from './Navbar.jsx'
 import IntroSlide from './IntroSlide.jsx'
 import BrandSlide from './BrandSlide.jsx'
 import EditorPanel from './EditorPanel.jsx'
@@ -135,39 +134,47 @@ export default function Hero() {
   }, [rawX, rawY, editMode])
 
   const currentSlide = slides[index]
-  const showEditToggle = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
+  // Edit-layout UI hidden for now. Editing is still reachable via the `?edit`
+  // URL flag; flip this to re-show the floating toggle button.
+  const showEditToggle = false
 
   return (
     <section className={`hero${editMode ? ' is-editing' : ''}`} ref={heroRef}>
       <div className="hero-bg" />
 
-      <Navbar />
-
-      <motion.div
-        className="hero-track"
-        animate={{ x: `-${index * 100}vw` }}
-        transition={{ duration: editMode ? 0 : 1.05, ease: [0.76, 0, 0.24, 1] }}
-      >
-        {slides.map((slide, i) => (
-          <div className="hero-slide" key={slide.id}>
-            {slide.type === 'intro' ? (
-              <IntroSlide slide={slide} active={i === index} mvx={mvx} mvy={mvy} />
-            ) : (
-              <BrandSlide
-                slide={slide}
-                elements={elementsFor(slide)}
-                active={i === index}
-                mvx={mvx}
-                mvy={mvy}
-                editing={editMode && i === index}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-                onChange={(id, patch) => patchEl(slide.id, id, patch)}
-              />
-            )}
-          </div>
-        ))}
-      </motion.div>
+      {/* Slides are stacked and cross-fade (clean dissolve + reveal) rather
+          than sliding sideways — suits the watercolour artwork. */}
+      <div className="hero-stack">
+        {slides.map((slide, i) => {
+          const isActive = i === index
+          return (
+            <motion.div
+              className="hero-slide"
+              key={slide.id}
+              initial={false}
+              animate={{ opacity: isActive ? 1 : 0 }}
+              transition={{ duration: editMode ? 0 : 1.2, ease: 'easeInOut' }}
+              style={{ zIndex: isActive ? 2 : 1, pointerEvents: isActive ? 'auto' : 'none' }}
+            >
+              {slide.type === 'intro' ? (
+                <IntroSlide slide={slide} active={isActive} mvx={mvx} mvy={mvy} />
+              ) : (
+                <BrandSlide
+                  slide={slide}
+                  elements={elementsFor(slide)}
+                  active={isActive}
+                  mvx={mvx}
+                  mvy={mvy}
+                  editing={editMode && isActive}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                  onChange={(id, patch) => patchEl(slide.id, id, patch)}
+                />
+              )}
+            </motion.div>
+          )
+        })}
+      </div>
 
       {/* deselect when clicking empty canvas in edit mode */}
       {editMode && (

@@ -14,7 +14,7 @@ export default function IntroSlide({ slide, active }) {
       <div className="intro-lockup">
         <motion.img
           className="intro-logo"
-          src="/logo/logo_2.svg"
+          src="/logo/logo_outline_2.svg"
           alt="Brand Esense"
           draggable="false"
           initial={{ opacity: 0, scale: 0.9 }}
