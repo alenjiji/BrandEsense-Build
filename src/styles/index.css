@@ -52,13 +52,15 @@ img {
 
 /* the exported texture overlaid on white via multiply so it reads as a
    subtle light-grey grain rather than a flat fill */
+/* BG paper texture: just above the white base (z-index 1), below the imagery
+   (slides sit at z-index 2+) and the text — so the slides read on top of it */
 .hero-bg-texture {
   position: absolute;
   inset: -4%;
   z-index: 1;
   pointer-events: none;
   background: url('/bg/BG.webp') center / cover no-repeat;
-  mix-blend-mode: multiply;
+  opacity: 0.84;
   animation: bgBreath 24s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -94,7 +96,7 @@ img {
   left: 0;
   z-index: 50;
   width: 100%;
-  padding: 0 4vw;
+  padding: 0 5vw;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -158,26 +160,15 @@ img {
   z-index: 38;
 }
 
-/* BG paper texture over the imagery — above all images/decor (stage z-index),
-   below the text (z-index 38), so copy always stays crisp on top */
-.slide-texture {
-  position: absolute;
-  inset: 0;
-  z-index: 37;
-  background: url('/bg/BG.webp') center / cover no-repeat;
-  opacity: 0.84;
-  pointer-events: none;
-}
-
 .slide-copy--left {
-  left: 3.4vw;
-  top: 50%;
+  left: 5vw;
+  top: 54%;
   transform: translateY(-50%);
-  max-width: 46vw;
+  max-width: 42vw;
 }
 
 .slide-copy--right {
-  right: 3.4vw;
+  right: 4vw;
   top: 30%;
   max-width: 24vw;
 }
@@ -215,13 +206,14 @@ img {
   color: var(--red);
 }
 
-/* intro title = 103.28pt (≈1.67× the 61.76pt brand title) */
+/* intro title = 103.28pt on the ~1920 artboard → 5.38vw */
 .headline--intro {
-  font-size: clamp(2.8rem, 7.1vw, 7.8rem);
+  font-size: clamp(2.4rem, 5.38vw, 6.6rem);
 }
 
+/* brand title = 61.76pt on the ~1920 artboard → 3.22vw */
 .headline--brand {
-  font-size: clamp(2rem, 4.3vw, 4.6rem);
+  font-size: clamp(1.6rem, 3.22vw, 3.9rem);
 }
 
 /* --------------------------------------------------------- credit (right) */
@@ -229,7 +221,7 @@ img {
 .credit-name {
   color: var(--red);
   font-weight: 500;
-  font-size: clamp(1rem, 1.67vw, 2.1rem);
+  font-size: clamp(0.82rem, 1.25vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: 0;
   margin-bottom: 0.2em;
@@ -239,7 +231,7 @@ img {
 .credit-text {
   color: var(--grey);
   font-weight: 300;
-  font-size: clamp(1rem, 1.67vw, 2.1rem);
+  font-size: clamp(0.82rem, 1.25vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: 0;
 }
@@ -347,7 +339,7 @@ img {
   margin-top: 1.6vw;
   color: var(--grey);
   font-weight: 800;
-  font-size: clamp(1rem, 1.67vw, 2.1rem);
+  font-size: clamp(0.82rem, 1.25vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
@@ -359,7 +351,7 @@ img {
 .intro-sub {
   color: var(--ink);
   font-weight: 300;
-  font-size: clamp(1rem, 1.67vw, 2.1rem);
+  font-size: clamp(0.82rem, 1.25vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: 0;
   margin-bottom: 1vw;
@@ -470,9 +462,21 @@ img {
   isolation: isolate;
 }
 
+/* BG paper texture behind the section content (site-wide overlay) */
+.clients::before,
+.works::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('/bg/BG.webp') center / cover no-repeat;
+  opacity: 0.84;
+  pointer-events: none;
+}
+
 .clients-copy {
   position: absolute;
-  left: 3.4vw;
+  left: 5vw;
   top: 30%;
   z-index: 30;
   max-width: 32vw;
@@ -612,7 +616,7 @@ img {
 /* left display heading */
 .works-head {
   position: absolute;
-  left: 3.4vw;
+  left: 5vw;
   top: 17%;
   z-index: 30;
   max-width: 34vw;

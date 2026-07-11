@@ -141,9 +141,11 @@ export default function Hero() {
   return (
     <section className={`hero${editMode ? ' is-editing' : ''}`} ref={heroRef}>
       <div className="hero-bg" />
+      <div className="hero-bg-texture" />
 
-      {/* Slides are stacked and cross-fade (clean dissolve + reveal) rather
-          than sliding sideways — suits the watercolour artwork. */}
+      {/* Watercolour dissolve: the outgoing slide bleeds away (blur + soften +
+          fade) into the paper, THEN the incoming reveals from a blur. The
+          reveal is delayed past the dissolve so the two never overlap. */}
       <div className="hero-stack">
         {slides.map((slide, i) => {
           const isActive = i === index
@@ -152,9 +154,34 @@ export default function Hero() {
               className="hero-slide"
               key={slide.id}
               initial={false}
-              animate={{ opacity: isActive ? 1 : 0 }}
-              transition={{ duration: editMode ? 0 : 1.2, ease: 'easeInOut' }}
-              style={{ zIndex: isActive ? 2 : 1, pointerEvents: isActive ? 'auto' : 'none' }}
+              animate={
+                isActive
+                  ? { opacity: 1, filter: 'blur(0px)', scale: 1 }
+                  : { opacity: 0, filter: 'blur(13px)', scale: 1.045 }
+              }
+              transition={
+                editMode
+                  ? { duration: 0 }
+                  : isActive
+                    ? {
+                        // reveal — starts once the previous slide has dissolved
+                        opacity: { duration: 0.95, delay: 0.62, ease: [0.2, 0.65, 0.25, 1] },
+                        filter: { duration: 1.1, delay: 0.62, ease: [0.2, 0.65, 0.25, 1] },
+                        scale: { duration: 1.3, delay: 0.62, ease: [0.16, 1, 0.3, 1] },
+                      }
+                    : {
+                        // dissolve out — bleeds away first
+                        opacity: { duration: 0.62, ease: [0.6, 0, 0.9, 0.3] },
+                        filter: { duration: 0.7, ease: [0.6, 0, 0.9, 0.3] },
+                        scale: { duration: 0.8, ease: [0.6, 0, 0.9, 0.3] },
+                      }
+              }
+              style={{
+                zIndex: isActive ? 2 : 1,
+                pointerEvents: isActive ? 'auto' : 'none',
+                transformOrigin: '50% 52%',
+                willChange: 'opacity, filter, transform',
+              }}
             >
               {slide.type === 'intro' ? (
                 <IntroSlide slide={slide} active={isActive} mvx={mvx} mvy={mvy} />
