@@ -463,7 +463,7 @@ img {
 }
 
 /* BG paper texture behind the section content (site-wide overlay) */
-.clients::before,
+/* .clients::before,
 .works::before {
   content: '';
   position: absolute;
@@ -472,7 +472,7 @@ img {
   background: url('/bg/BG.webp') center / cover no-repeat;
   opacity: 0.84;
   pointer-events: none;
-}
+} */
 
 .clients-copy {
   position: absolute;

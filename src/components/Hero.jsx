@@ -141,7 +141,7 @@ export default function Hero() {
   return (
     <section className={`hero${editMode ? ' is-editing' : ''}`} ref={heroRef}>
       <div className="hero-bg" />
-      <div className="hero-bg-texture" />
+      {/* <div className="hero-bg-texture" /> */}
 
       {/* Watercolour dissolve: the outgoing slide bleeds away (blur + soften +
           fade) into the paper, THEN the incoming reveals from a blur. The
