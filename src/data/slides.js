@@ -155,7 +155,7 @@ export const slides = [
     ],
     desc: {
       name: 'Prasad Yogi',
-      role: 'CEO, Brand Essence Global',
+      role: 'CEO, Brand Esense',
       text: 'Creative leadership driving vision, growth & excellence.',
       top: 'auto',
       bottom: '19%',
