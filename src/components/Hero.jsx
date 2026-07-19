@@ -102,7 +102,16 @@ export default function Hero() {
   const mvx = useSpring(rawX, { stiffness: 60, damping: 18, mass: 0.6 })
   const mvy = useSpring(rawY, { stiffness: 60, damping: 18, mass: 0.6 })
 
-  const go = useCallback((next) => setIndex((next + slides.length) % slides.length), [])
+  // `prevIndex` keeps the outgoing slide's layers mounted through the dissolve
+  const indexRef = useRef(0)
+  const [prevIndex, setPrevIndex] = useState(null)
+  const go = useCallback((next) => {
+    const n = (next + slides.length) % slides.length
+    if (n === indexRef.current) return
+    setPrevIndex(indexRef.current)
+    indexRef.current = n
+    setIndex(n)
+  }, [])
 
   // auto-advance (paused while editing). `?freeze` also holds a slide.
   const frozen =
@@ -157,31 +166,32 @@ export default function Hero() {
               animate={
                 isActive
                   ? { opacity: 1, filter: 'blur(0px)', scale: 1 }
-                  : { opacity: 0, filter: 'blur(13px)', scale: 1.045 }
+                  : { opacity: 0, filter: 'blur(7px)', scale: 1.018 }
               }
               transition={
                 editMode
                   ? { duration: 0 }
                   : isActive
                     ? {
-                        // reveal — starts once the previous slide has dissolved
-                        opacity: { duration: 0.95, delay: 0.62, ease: [0.2, 0.65, 0.25, 1] },
-                        filter: { duration: 1.1, delay: 0.62, ease: [0.2, 0.65, 0.25, 1] },
-                        scale: { duration: 1.3, delay: 0.62, ease: [0.16, 1, 0.3, 1] },
+                        // reveal — bleeds back into focus like paint settling
+                        opacity: { duration: 1.5, delay: 0.34, ease: [0.33, 0, 0.2, 1] },
+                        filter: { duration: 1.8, delay: 0.34, ease: [0.25, 0, 0.15, 1] },
+                        scale: { duration: 2.1, delay: 0.34, ease: [0.16, 1, 0.3, 1] },
                       }
                     : {
-                        // dissolve out — bleeds away first
-                        opacity: { duration: 0.62, ease: [0.6, 0, 0.9, 0.3] },
-                        filter: { duration: 0.7, ease: [0.6, 0, 0.9, 0.3] },
-                        scale: { duration: 0.8, ease: [0.6, 0, 0.9, 0.3] },
+                        // dissolve out — washes away gently, leading the reveal
+                        opacity: { duration: 0.95, ease: [0.4, 0, 0.7, 0.6] },
+                        filter: { duration: 1.1, ease: [0.4, 0, 0.7, 0.6] },
+                        scale: { duration: 1.3, ease: [0.4, 0, 0.7, 0.6] },
                       }
               }
               style={{
                 zIndex: isActive ? 2 : 1,
                 pointerEvents: isActive ? 'auto' : 'none',
                 transformOrigin: '50% 52%',
-                willChange: 'opacity, filter, transform',
+                willChange: isActive ? 'opacity, filter, transform' : 'auto',
               }}
+              data-active={isActive ? 'true' : 'false'}
             >
               {slide.type === 'intro' ? (
                 <IntroSlide slide={slide} active={isActive} mvx={mvx} mvy={mvy} />
@@ -193,6 +203,7 @@ export default function Hero() {
                   mvx={mvx}
                   mvy={mvy}
                   editing={editMode && isActive}
+                  mounted={isActive || i === prevIndex}
                   selectedId={selectedId}
                   onSelect={setSelectedId}
                   onChange={(id, patch) => patchEl(slide.id, id, patch)}

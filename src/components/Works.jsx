@@ -1,19 +1,7 @@
 import CreativeShowcase from './CreativeShowcase.jsx'
-import { worksClients } from '../data/works.js'
+import { worksClients, worksHeading } from '../data/works.js'
 
-// The Works section. One CreativeShowcase per client — currently i-LEAF.
-// Add more clients in data/works.js and they render as additional showcases.
+// The Works section — one showcase, switchable across every client.
 export default function Works() {
-  return (
-    <>
-      {worksClients.map((client) => (
-        <CreativeShowcase
-          key={client.id}
-          heading={client.heading}
-          description={client.description}
-          creatives={client.creatives}
-        />
-      ))}
-    </>
-  )
+  return <CreativeShowcase heading={worksHeading} clients={worksClients} />
 }

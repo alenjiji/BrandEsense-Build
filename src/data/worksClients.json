@@ -1,0 +1,92 @@
+[
+  {
+    "id": "i-leaf",
+    "name": "i-LEAF Doors",
+    "logo": "/logo/clients/ileaf.svg",
+    "dir": "",
+    "tagline": "Steel doors built on 19 years of trust.",
+    "creatives": [
+      "/opt/works/19 years trust.webp",
+      "/opt/works/For 19 years, i-Leaf steel doors have stood guard, protecting what matters the most. We offer a.webp",
+      "/opt/works/i Leaf Door Post_2.webp",
+      "/opt/works/i Leaf Door Post_3.webp",
+      "/opt/works/i Leaf_POST_Creative 10_11-03.webp",
+      "/opt/works/iLeaf Poster 2.webp",
+      "/opt/works/Your familys sweet moments deserve a secure home. For 19 years, i-Leaf Steel Doors has stood st.webp"
+    ]
+  },
+  {
+    "id": "clinic7",
+    "name": "Clinic 7",
+    "logo": "/logo/clients/clinic7.svg",
+    "dir": "(2)  C7",
+    "tagline": "Skin, hair and dental care, made aspirational.",
+    "creatives": [
+      "/opt/works/(2)  C7/2qMY6j-8.webp",
+      "/opt/works/(2)  C7/9AH59L-8.webp",
+      "/opt/works/(2)  C7/bS5SVn-8.webp",
+      "/opt/works/(2)  C7/Jad5mg-8.webp",
+      "/opt/works/(2)  C7/KTOGTU-8.webp",
+      "/opt/works/(2)  C7/nP4B18-8.webp"
+    ]
+  },
+  {
+    "id": "sepack",
+    "name": "Sepack",
+    "logo": null,
+    "dir": "(3).  Sepack",
+    "tagline": "Industrial packaging brought to life.",
+    "creatives": [
+      "/opt/works/(3).  Sepack/Bag Closer Ad for pushing 1080 x 1350.webp",
+      "/opt/works/(3).  Sepack/Sepack Creatives B.webp",
+      "/opt/works/(3).  Sepack/Sepack Creatives D.webp",
+      "/opt/works/(3).  Sepack/Sepack Creatives F.webp"
+    ]
+  },
+  {
+    "id": "margin-free",
+    "name": "Margin Free",
+    "logo": null,
+    "dir": "(4)  Margin Free",
+    "tagline": "Comfort and craft for the modern home.",
+    "creatives": [
+      "/opt/works/(4)  Margin Free/A touch so gentle, it feels like a whisper... 🌿Luxury isnt loud_ its a feeling. It’s the soft.webp",
+      "/opt/works/(4)  Margin Free/Built on a promise that will never break... ✨Quality is our bond with you. Just like the strong.webp",
+      "/opt/works/(4)  Margin Free/Floating on a breeze, lighter than air. 🌬️❄️Bringing you the best cooling mattress in Kerala. .webp",
+      "/opt/works/(4)  Margin Free/Follow the satin thread where comfort begins... 🧵❤️Every great day starts with a restful night.webp",
+      "/opt/works/(4)  Margin Free/So comfortable, you won’t even care what’s happening around you. Whatever the day throws at you,.webp",
+      "/opt/works/(4)  Margin Free/Where natures calm meets timeless luxury... 🌿✨Every great day starts with a restful night. Tha.webp"
+    ]
+  },
+  {
+    "id": "de-pedia",
+    "name": "De Pedia",
+    "logo": "/logo/clients/De_pedia.svg",
+    "dir": "(5). D Pedia",
+    "tagline": "Interiors that inspire every space.",
+    "creatives": [
+      "/opt/works/(5). D Pedia/475274388_17856075741363310_6896615998781155614_n.webp (1).webp",
+      "/opt/works/(5). D Pedia/477226864_17857423182363310_204954415488566607_n.webp.webp",
+      "/opt/works/(5). D Pedia/479719404_17857871946363310_6706804145034796079_n.webp.webp",
+      "/opt/works/(5). D Pedia/480142216_17858665149363310_7717352569669863551_n.webp.webp",
+      "/opt/works/(5). D Pedia/480587905_17858973210363310_4336204877104923539_n.webp.webp",
+      "/opt/works/(5). D Pedia/480891661_17859202764363310_8623974568350813680_n.webp.webp",
+      "/opt/works/(5). D Pedia/622728100_17999368577895580_4356864548471252470_n.webp.webp"
+    ]
+  },
+  {
+    "id": "vuespace",
+    "name": "VueSpace",
+    "logo": "/logo/clients/vuespace.svg",
+    "dir": "(6). Viewspace",
+    "tagline": "Interior studio storytelling.",
+    "creatives": [
+      "/opt/works/(6). Viewspace/476566295_17867453073312048_1981000287753395580_n.webp.webp",
+      "/opt/works/(6). Viewspace/476648778_17867187591312048_7644365893061589886_n.webp.webp",
+      "/opt/works/(6). Viewspace/481926380_17870271510312048_2252278826945482299_n.webp (1).webp",
+      "/opt/works/(6). Viewspace/482157205_17870129406312048_6301496497797401962_n.webp.webp",
+      "/opt/works/(6). Viewspace/483465702_17871542121312048_985999071557156628_n.webp.webp",
+      "/opt/works/(6). Viewspace/485118721_17872897671312048_1079630371225924294_n.webp.webp"
+    ]
+  }
+]

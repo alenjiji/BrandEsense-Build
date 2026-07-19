@@ -13,6 +13,7 @@ export default function BrandSlide({
   mvx,
   mvy,
   editing = false,
+  mounted = true,
   selectedId = null,
   onSelect,
   onChange,
@@ -21,8 +22,11 @@ export default function BrandSlide({
 
   return (
     <div className="slide slide--brand">
+      {/* Only the slides on screen (active + the one dissolving out) mount
+          their layers — off-screen slides are fully transparent anyway, and
+          skipping them keeps pointer-parallax work to ~2 slides, not 5. */}
       <div className="stage">
-        {elements.map((el, i) =>
+        {(mounted ? elements : []).map((el, i) =>
           editing ? (
             <EditableElement
               key={el.id}
