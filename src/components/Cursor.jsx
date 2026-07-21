@@ -8,9 +8,6 @@ export default function Cursor() {
   const labelRef = useRef(null)
 
   useEffect(() => {
-    window.addEventListener('mousemove', () => { console.log('WINDOW') })
-    document.addEventListener('mousemove', () => { console.log('DOCUMENT') })
-
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return undefined
     const fine = window.matchMedia('(pointer: fine)').matches

@@ -30,3 +30,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# unused files
+C:\Users\A\Documents\projects\brandEsense\site_brandesense\public\hero
