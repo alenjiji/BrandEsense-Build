@@ -481,7 +481,8 @@ img {
 .works::before,
 .services::before,
 .video-sec::before,
-.about::before {
+.about::before,
+.testimonials::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -2258,8 +2259,6 @@ html.nav-drawer-open body {
   content-visibility: auto;
   contain-intrinsic-size: 100vw 100vh;
 }
-
-/* .testimonials::before { removed }*/
 
 .testimonials-head {
   position: relative;
