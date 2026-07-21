@@ -7,7 +7,7 @@ import useTilt from '../hooks/useTilt.js'
 export default function VideoSection() {
   const ref = useRef(null)
   const [seen, setSeen] = useState(false)
-  useTilt(ref, '.video-frame img', { max: 4 })
+  useTilt(ref, '.video-frame img', { max: 4.5, scale: 1.045 })
 
   useEffect(() => {
     const el = ref.current

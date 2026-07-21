@@ -125,20 +125,45 @@ export default function Hero() {
   useEffect(() => {
     const el = heroRef.current
     if (!el || editMode) return undefined
-    const onMove = (e) => {
+
+    // Touch gets a boosted swing so the parallax is actually noticeable on a
+    // phone: a tap nudges the composition toward the point (then it recentres),
+    // a drag makes the layers follow the finger. Passive listeners, so vertical
+    // scroll between sections is never blocked.
+    const coarse = window.matchMedia('(pointer: coarse)').matches
+    const boost = coarse ? 1.5 : 1
+
+    const setFrom = (cx, cy) => {
       const r = el.getBoundingClientRect()
-      rawX.set(((e.clientX - r.left) / r.width - 0.5) * 2)
-      rawY.set(((e.clientY - r.top) / r.height - 0.5) * 2)
+      rawX.set(((cx - r.left) / r.width - 0.5) * 2 * boost)
+      rawY.set(((cy - r.top) / r.height - 0.5) * 2 * boost)
     }
-    const onLeave = () => {
+    const recentre = () => {
       rawX.set(0)
       rawY.set(0)
     }
+
+    const onMove = (e) => setFrom(e.clientX, e.clientY)
+    const onTouch = (e) => {
+      const t = e.touches[0]
+      if (t) setFrom(t.clientX, t.clientY)
+    }
+
     el.addEventListener('pointermove', onMove)
-    el.addEventListener('pointerleave', onLeave)
+    el.addEventListener('pointerleave', recentre)
+    if (coarse) {
+      el.addEventListener('touchstart', onTouch, { passive: true })
+      el.addEventListener('touchmove', onTouch, { passive: true })
+      el.addEventListener('touchend', recentre, { passive: true })
+      el.addEventListener('touchcancel', recentre, { passive: true })
+    }
     return () => {
       el.removeEventListener('pointermove', onMove)
-      el.removeEventListener('pointerleave', onLeave)
+      el.removeEventListener('pointerleave', recentre)
+      el.removeEventListener('touchstart', onTouch)
+      el.removeEventListener('touchmove', onTouch)
+      el.removeEventListener('touchend', recentre)
+      el.removeEventListener('touchcancel', recentre)
     }
   }, [rawX, rawY, editMode])
 
@@ -150,7 +175,7 @@ export default function Hero() {
   return (
     <section className={`hero${editMode ? ' is-editing' : ''}`} ref={heroRef}>
       <div className="hero-bg" />
-      {/* <div className="hero-bg-texture" /> */}
+      <div className="hero-bg-texture" />
 
       {/* Watercolour dissolve: the outgoing slide bleeds away (blur + soften +
           fade) into the paper, THEN the incoming reveals from a blur. The

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
+import 'lenis/dist/lenis.css'
 
 // Smooth scrolling + a velocity-driven skew, the two things that give the
 // reference site its weight. The skew is applied to opted-in elements
@@ -14,7 +15,8 @@ export default function useSmoothScroll() {
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      syncTouch: false, // native feel on touch, smoothing on desktop
+      syncTouch: false,
+      overscroll: false,
     })
 
     const targets = () => document.querySelectorAll('[data-skew]')

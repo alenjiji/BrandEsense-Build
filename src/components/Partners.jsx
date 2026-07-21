@@ -37,7 +37,7 @@ const label = (name) =>
 export default function Partners() {
   const ref = useRef(null)
   const [seen, setSeen] = useState(false)
-  useTilt(ref, '.partner img', { max: 14 })
+  useTilt(ref, '.partner img', { max: 24 })
 
   useEffect(() => {
     const el = ref.current

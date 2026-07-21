@@ -74,8 +74,8 @@ export const slides = [
     },
     elements: [
       { id: 'metro', kind: 'image', src: '/opt/hero/Sreedharan/metro_left_top.webp', left: 15.5, top: 25.5, w: 37, z: 19, depth: 42, glow: true },
-      { id: 'bridge', kind: 'image', src: '/opt/hero/Sreedharan/bridge_right.webp', left: 43, top: 39, w: 40, z: 20, depth: 38, glow: true },
-      { id: 'ship', kind: 'image', src: '/opt/hero/Sreedharan/ship_right.webp', left: 59.5, top: 59, w: 20, z: 20, depth: 54, glow: true },
+      { id: 'bridge', kind: 'image', src: '/opt/hero/Sreedharan/bridge_right.webp', left: 43, top: 32, w: 40, z: 20, depth: 38, glow: true },
+      { id: 'ship', kind: 'image', src: '/opt/hero/Sreedharan/ship_right.webp', left: 58.5, top: 65.5, w: 20, z: 21, depth: 54, glow: true },
       { id: 'person', kind: 'image', src: '/opt/hero/Sreedharan/sreedharan.webp', left: 51, top: 50, w: 38, z: 20, depth: 26, center: true, glow: true },
       { id: 'ring-1', kind: 'svg', src: '/assets/ring_1_rotate.svg', left: 53, top: 44, w: 30, z: 19, depth: 16, center: true, spin: true },
       { id: 'ring-arrow', kind: 'svg', src: '/assets/ring_arrow_2.svg', left: 58, top: 65.5, w: 30, z: 33, depth: 20, center: true },
@@ -108,8 +108,8 @@ export const slides = [
     },
     elements: [
       { id: 'building', kind: 'image', src: '/opt/hero/v-gaurd/building_left.webp', left: 21.5, top: 24.5, w: 40, z: 20, depth: 42, glow: true },
-      { id: 'heater', kind: 'image', src: '/opt/hero/v-gaurd/heater_right.webp', left: 56.5, top: 36, w: 30, z: 26, depth: 38, glow: true },
-      { id: 'water-heater', kind: 'image', src: '/opt/hero/v-gaurd/water_heater_right.webp', left: 77, top: 40.5, w: 12, z: 34, depth: 52, glow: true },
+      { id: 'heater', kind: 'image', src: '/opt/hero/v-gaurd/heater_right.webp', left: 54.5, top: 34, w: 30, z: 26, depth: 38, glow: true },
+      { id: 'water-heater', kind: 'image', src: '/opt/hero/v-gaurd/water_heater_right.webp', left: 72, top: 48.5, w: 12, z: 34, depth: 52, glow: true },
       { id: 'person', kind: 'image', src: '/opt/hero/v-gaurd/kochu_ousep.webp', left: 53, top: 52, w: 35, z: 30, depth: 26, center: true, glow: true },
       ...decor(),
     ],
@@ -135,8 +135,8 @@ export const slides = [
       width: '19vw',
     },
     elements: [
-      { id: 'building', kind: 'image', src: '/opt/hero/synthite/synthite_building_left.webp', left: 18, top: 24, w: 38, z: 20, depth: 42, glow: true },
-      { id: 'medicines', kind: 'image', src: '/opt/hero/synthite/medicines_and_herbs_right.webp', left: 65.5, top: 50.5, w: 22, z: 34, depth: 52, glow: true },
+      { id: 'building', kind: 'image', src: '/opt/hero/synthite/synthite_building_left.webp', left: 20, top: 24, w: 38, z: 20, depth: 42, glow: true },
+      { id: 'medicines', kind: 'image', src: '/opt/hero/synthite/medicines_and_herbs_right.webp', left: 60.5, top: 48, w: 22, z: 34, depth: 52, glow: true },
       { id: 'person', kind: 'image', src: '/opt/hero/synthite/viju_jacob.webp', left: 55, top: 51, w: 37, z: 30, depth: 26, center: true, glow: true },
       ...decor(),
     ],
@@ -162,8 +162,8 @@ export const slides = [
       width: '19vw',
     },
     elements: [
-      { id: 'studio-left', kind: 'image', src: '/opt/hero/prasad-yogi/bg_Studio_Left.webp', left: 19, top: 7, w: 26, z: 20, depth: 42, glow: true },
-      { id: 'studio-right', kind: 'image', src: '/opt/hero/prasad-yogi/bg_right_studio.webp', left: 66, top: 23, w: 32, z: 22, depth: 38, glow: true },
+      { id: 'studio-left', kind: 'image', src: '/opt/hero/prasad-yogi/bg_Studio_Left.webp', left: 17, top: 7, w: 26, z: 20, depth: 42, glow: true },
+      { id: 'studio-right', kind: 'image', src: '/opt/hero/prasad-yogi/bg_right_studio.webp', left: 64, top: 16, w: 30, z: 22, depth: 38, glow: true },
       { id: 'person', kind: 'image', src: '/opt/hero/prasad-yogi/prasad_yogi.webp', left: 54, top: 52, w: 42, z: 30, depth: 26, center: true, glow: true },
       ...decor(),
     ],

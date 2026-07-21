@@ -21,7 +21,7 @@ export default function BrandSlide({
   const { heading, desc } = slide
 
   return (
-    <div className="slide slide--brand">
+    <div className="slide slide--brand" data-slide={slide.id}>
       {/* Only the slides on screen (active + the one dissolving out) mount
           their layers — off-screen slides are fully transparent anyway, and
           skipping them keeps pointer-parallax work to ~2 slides, not 5. */}

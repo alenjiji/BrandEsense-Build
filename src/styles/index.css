@@ -13,6 +13,22 @@
   box-sizing: border-box;
 }
 
+/* Selection: solid brand red with white text. A translucent tint washed out
+   against grey copy and vanished on the dark sections; a solid red block with
+   white text stays crisp and legible on every background, light or dark, and
+   reads as a deliberate brand accent. */
+::selection {
+  background: var(--red);
+  color: #fff;
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--red);
+  color: #fff;
+  text-shadow: none;
+}
+
 html,
 body {
   background: var(--bg);
@@ -56,22 +72,11 @@ img {
    (slides sit at z-index 2+) and the text — so the slides read on top of it */
 .hero-bg-texture {
   position: absolute;
-  inset: -4%;
+  inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: url('/opt/bg/BG.webp') center / cover no-repeat;
+  background: url('/bg/BG.webp') center / cover no-repeat;
   opacity: 0.84;
-  animation: bgBreath 24s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@keyframes bgBreath {
-  from {
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  to {
-    transform: scale(1.06) translate3d(-1%, -1%, 0);
-  }
 }
 
 .hero-stack {
@@ -625,6 +630,12 @@ img {
   height: 100%;
   display: block;
   object-fit: cover;
+  /* Push the frame to the top of the source so the lady's face clears the crop.
+     On wide screens the container is very landscape, so cover trims a lot of
+     vertical — anchoring near the top keeps the face in view. */
+  object-position: center 12%;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .video-play {
@@ -893,38 +904,6 @@ img {
 .cf-dot.is-active {
   background: var(--red);
   transform: scale(1.35);
-}
-
-@media (max-width: 860px) {
-  .works-head {
-    max-width: 84vw;
-    top: 14%;
-  }
-  .works-desc {
-    display: none;
-  }
-  .cf-item img {
-    height: 46vh;
-  }
-}
-
-/* ------------------------------------------------------------ responsive */
-@media (max-width: 860px) {
-  .headline--intro {
-    font-size: clamp(2.4rem, 11vw, 4.2rem);
-  }
-  .slide-copy--left {
-    max-width: 84vw;
-  }
-  .intro-lockup {
-    display: none;
-  }
-  .slide-copy--right {
-    right: 5vw;
-    max-width: 60vw;
-    top: auto;
-    bottom: 12vh;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1294,7 +1273,7 @@ img {
   flex-direction: column;
   justify-content: center;
   gap: 9vh;
-  padding: 14vh 7vw 10vh;
+  padding: 14vh 7vw 6vh;
   content-visibility: auto;
   contain-intrinsic-size: 100vw 100vh;
 }
@@ -1388,7 +1367,7 @@ img {
   flex-direction: column;
   justify-content: center;
   gap: 7vh;
-  padding: 14vh 7vw 10vh;
+  padding: 14vh 7vw 6vh;
   content-visibility: auto;
   contain-intrinsic-size: 100vw 100vh;
 }
@@ -1461,38 +1440,47 @@ body.has-custom-cursor [data-cursor] {
   pointer-events: none;
   border-radius: 999px;
   opacity: 0;
-  /* inverts whatever is behind — legible on the light sections and the dark
-     About/Video ones without any per-section theming */
-  mix-blend-mode: difference;
+  /* NOTE: no mix-blend-mode. difference-blend on a fixed element stops
+     compositing (goes invisible) the moment the browser promotes a scroll
+     layer — i.e. after the first scroll. Colour is toggled per-section in JS
+     instead (.on-dark), which is bullet-proof. */
   will-change: transform;
+  /* --ink colour on light sections; overridden to white on dark ones */
+  --cur: var(--ink);
 }
 
 .cursor-ring {
   width: 40px;
   height: 40px;
-  border: 1.5px solid #fff;
+  border: 1.5px solid var(--cur);
   display: grid;
   place-items: center;
   transition:
     width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.35s ease,
-    border-color 0.35s ease,
+    border-color 0.3s ease,
     opacity 0.25s ease;
 }
 
 .cursor-dot {
   width: 7px;
   height: 7px;
-  background: #fff;
-  transition: width 0.3s ease, height 0.3s ease, opacity 0.25s ease;
+  background: var(--cur);
+  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, opacity 0.25s ease;
+}
+
+/* over a dark section the cursor turns white */
+.cursor-ring.on-dark,
+.cursor-dot.on-dark {
+  --cur: #ffffff;
 }
 
 /* hover: ring swells and the dot tucks away */
 .cursor-ring.is-hover {
   width: 74px;
   height: 74px;
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--cur) 14%, transparent);
 }
 
 .cursor-dot.is-hover {
@@ -1526,6 +1514,25 @@ body.has-custom-cursor [data-cursor] {
 
 .cursor-ring.is-label .cursor-label {
   opacity: 1;
+}
+
+/* touch: a soft red focus ring instead of the blend-mode cursor */
+.cursor-ring.is-touch {
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(237, 61, 36, 0.7);
+  mix-blend-mode: normal;
+  transition:
+    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+}
+
+/* tap pulse — a quick swell that settles back */
+.cursor-ring.is-touch.is-tap {
+  width: 62px;
+  height: 62px;
+  border-color: rgba(237, 61, 36, 0.35);
 }
 
 /* ===================================================== 3D scroll reveals ==== */
@@ -1627,9 +1634,12 @@ body.has-custom-cursor [data-cursor] {
   to   { transform: translate3d(0, 0, 0); }
 }
 
-/* hovering a rail slows it rather than hard-stopping — reads intentional */
+/* Pause (don't change duration) on hover: mutating animation-duration mid-run
+   remaps the timeline and snaps the strip to a different frame — the glitch.
+   Pausing holds every tile exactly where it is, so the one under the cursor
+   stays put and lifts. */
 .mq:hover .mq-track {
-  animation-duration: 190s !important;
+  animation-play-state: paused;
 }
 
 .mq-item {
@@ -1786,3 +1796,884 @@ body.has-custom-cursor [data-cursor] {
   .execution-sub { max-width: 84vw; }
   .works-clients { gap: 1rem; }
 }
+
+/* ======================================================== mobile navigation */
+/* burger — hidden on desktop */
+.nav-burger {
+  display: none;
+  position: relative;
+  z-index: 70;
+  width: 44px;
+  height: 44px;
+  margin-top: 0.9rem;
+  border: none;
+  /* translucent light chip: melts into light sections, gives the ink lines
+     contrast when the fixed navbar floats over the dark ones */
+  background: rgba(254, 254, 255, 0.78);
+  border-radius: 10px;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.nav-burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.nav-burger.is-open span:first-child {
+  transform: translateY(4.5px) rotate(45deg);
+}
+
+.nav-burger.is-open span:last-child {
+  transform: translateY(-4.5px) rotate(-45deg);
+}
+
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(254, 254, 255, 0.97);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 9vw;
+  gap: 1.35rem;
+}
+
+.nav-drawer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/opt/bg/BG.webp') center / cover no-repeat;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.nav-drawer-link {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.9rem, 8.5vw, 2.7rem);
+  color: var(--grey);
+  text-decoration: none;
+}
+
+.nav-drawer-link.is-active {
+  color: var(--red);
+}
+
+.nav-drawer-tag {
+  margin-top: 1.6rem;
+  color: var(--grey-soft);
+  font-weight: 300;
+  font-size: 0.85rem;
+}
+
+html.nav-drawer-open,
+html.nav-drawer-open body {
+  overflow: hidden;
+}
+
+/* ============================================================= mobile ≤768 */
+@media (max-width: 768px) {
+  /* --- navbar --- */
+  .navbar {
+    padding: 0 5vw;
+  }
+
+  .nav-logo img {
+    width: clamp(118px, 32vw, 168px);
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+
+  /* --- hero: the tuned landscape composition is contained to a middle band —
+         wide enough that the wings crop, small enough that the portrait clears
+         the heading (top) and credit (bottom). Larger (150vw) so the figure and
+         graphics read at a proper size on a phone. --- */
+  .stage {
+    inset: auto;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
+    width: 150vw;
+    height: calc(150vw * 0.5625);
+  }
+
+  /* Prasad's composition leans right (wide studio-right + person at 54%);
+     nudge the stage left so the figure sits centred like the other slides */
+  .slide--brand[data-slide='prasad-yogi'] .stage {
+    left: 44%;
+  }
+
+  .headline--brand {
+    font-size: clamp(1.5rem, 6.6vw, 2.3rem);
+  }
+
+  .headline--intro {
+    font-size: clamp(2.1rem, 9.6vw, 3rem);
+  }
+
+  .slide-copy--left {
+    left: 5vw;
+    top: 12%;
+    transform: none;
+    max-width: 90vw;
+  }
+
+  /* inline per-slide desktop placement (top/bottom/width) must lose here */
+  .slide-copy--right {
+    top: auto !important;
+    bottom: 9.5vh !important;
+    left: 5vw;
+    right: auto;
+    max-width: 84vw !important;
+  }
+
+  .credit-name,
+  .credit-text {
+    font-size: clamp(0.85rem, 3.6vw, 1.05rem);
+  }
+
+  /* intro: heading up top, lockup flows beneath on the left */
+  .slide--intro .slide-copy--left {
+    top: 12%;
+    left: 5vw;
+    max-width: 90vw;
+  }
+
+  .intro-lockup {
+    left: 5vw;
+    right: auto;
+    top: 47%;
+    width: 66vw;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .intro-quote {
+    margin-top: 4vw;
+    font-size: clamp(0.9rem, 3.9vw, 1.1rem);
+  }
+
+  .intro-sub {
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+    margin-bottom: 3vw;
+  }
+
+  .intro-cta {
+    margin-top: 6vw;
+  }
+
+  .pill-btn {
+    font-size: clamp(0.8rem, 3.4vw, 0.95rem);
+  }
+
+  .hero-dots {
+    bottom: 2.4vh;
+  }
+
+  /* --- partners --- */
+  .partners {
+    padding: 11vh 5vw 7vh;
+  }
+
+  .partners-head,
+  .partners-sub {
+    max-width: 90vw;
+  }
+
+  .partners-title {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .partners-sub {
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  /* keep the row grouping; just wrap+centre so gaps stay even (space-between
+     left one oversized gap when a row wrapped) */
+  .partners-grid {
+    gap: 4.5vh;
+  }
+
+  .partners-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3.6vh 7vw;
+  }
+
+  .partner {
+    height: clamp(22px, 6.6vw, 32px);
+  }
+
+  .partner img {
+    max-width: 24vw;
+  }
+
+  /* --- video --- */
+  .video-sec {
+    padding: 11vh 5vw 8vh;
+    gap: 3.5vh;
+  }
+
+  .video-frame {
+    height: auto;
+  }
+
+  .video-frame img {
+    height: auto;
+    aspect-ratio: 1660 / 935;
+  }
+
+  .video-play {
+    opacity: 1; /* no hover on touch — keep the affordance visible */
+  }
+
+  .video-foot {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .video-title {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .video-desc {
+    max-width: 90vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  .video-cta {
+    margin-left: 0;
+    align-self: flex-start;
+    width: 42px;
+  }
+
+  .video-emblem {
+    width: 150vw;
+    right: -46%;
+    top: -6%;
+  }
+
+  /* --- works --- */
+  .works {
+    --cf-gap: 58vw;
+  }
+
+  .works-head {
+    top: 8.5%;
+    left: 5vw;
+    max-width: 90vw;
+  }
+
+  .works-head .headline--brand {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .works .cf-item {
+    top: 44%;
+  }
+
+  .works .cf-item img {
+    height: min(44vh, 96vw);
+  }
+
+  .works-desc {
+    display: none; /* the client rail below carries the identity on mobile */
+  }
+
+  .works-side {
+    top: 40%;
+  }
+
+  .works-side--left {
+    left: 2vw;
+  }
+
+  .works-side--right {
+    right: 2vw;
+  }
+
+  .works-side svg {
+    width: 38px;
+  }
+
+  .works .works-controls {
+    bottom: 11.5vh;
+  }
+
+  /* client rail becomes a swipeable strip */
+  .works-clients {
+    justify-content: flex-start;
+    overflow-x: auto;
+    max-width: 92vw;
+    padding: 0 2vw 6px;
+    gap: 1.6rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .works-clients::-webkit-scrollbar {
+    display: none;
+  }
+
+  .works-client {
+    height: 26px;
+  }
+
+  .works-client img {
+    max-width: 18vw;
+  }
+
+  .works-client-wordmark {
+    font-size: 0.8rem;
+  }
+
+  .works-arrow-top {
+    left: 55%;
+    top: 16%;
+    width: 30vw;
+  }
+
+  .works-arrow-bottom {
+    width: 70vw;
+    bottom: 6%;
+  }
+
+  /* --- execution --- */
+  .execution {
+    padding: 11vh 0 8vh;
+    gap: 5vh;
+  }
+
+  .mq-item {
+    height: clamp(104px, 16vh, 170px);
+  }
+
+  .execution-copy {
+    padding: 0 5vw;
+    max-width: 100vw;
+  }
+
+  .execution-title {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .execution-sub {
+    max-width: 90vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  /* --- about --- */
+  .about {
+    padding: 11vh 5vw 8vh;
+    gap: 6vh;
+  }
+
+  .about-logo {
+    width: 56vw;
+    max-width: 300px;
+  }
+
+  .about-cols {
+    gap: 5vw;
+    padding-top: 4vw;
+  }
+
+  .about-col {
+    padding-left: 4vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  .about-stats {
+    gap: 4.5vh 6vw;
+  }
+
+  .stat-num {
+    font-size: clamp(2.3rem, 12vw, 3.4rem);
+  }
+
+  .stat-label {
+    font-size: clamp(0.8rem, 3.4vw, 0.95rem);
+  }
+
+  .about-emblem {
+    width: 160vw;
+    right: -55%;
+    top: -8%;
+  }
+
+  /* --- services --- */
+  .services {
+    padding: 11vh 5vw 8vh;
+    gap: 4.5vh;
+  }
+
+  .services-title {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .services-grid {
+    gap: 4.5vh;
+  }
+
+  .service-title {
+    font-size: clamp(1rem, 4.4vw, 1.25rem);
+  }
+
+  .service-body {
+    padding-left: 4vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+}
+
+
+
+/* ======================================================= testimonials section */
+.testimonials {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #fefeff;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8vh;
+  padding: 14vh 0 10vh;
+  content-visibility: auto;
+  contain-intrinsic-size: 100vw 100vh;
+}
+
+/* .testimonials::before { removed }*/
+
+.testimonials-head {
+  position: relative;
+  z-index: 2;
+  padding: 0 7vw;
+  max-width: 60vw;
+}
+
+.testimonials-title {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--grey);
+  font-size: clamp(1.7rem, 3.4vw, 4rem);
+  margin-bottom: 0.5em;
+}
+
+.testimonials-title .is-red {
+  color: var(--red);
+}
+
+.testimonials-sub {
+  color: var(--ink);
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.12vw, 1.35rem);
+  line-height: 1.5;
+  max-width: 34vw;
+}
+
+.tmarquee {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.tmarquee-track {
+  display: flex;
+  gap: 2vw;
+  width: max-content;
+  padding: 3vh 3.5vw;
+  animation: mqLeft 78s linear infinite;
+  animation-play-state: paused;
+}
+
+.testimonials.is-live .tmarquee-track {
+  animation-play-state: running;
+}
+
+.tmarquee:hover .tmarquee-track {
+  animation-play-state: paused;
+}
+
+.tcard {
+  flex: 0 0 auto;
+  width: clamp(270px, 23vw, 372px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 34px 64px -36px rgba(0, 0, 0, 0.28);
+  padding: 2.3rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.tcard-avatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  background: #eeeeec;
+  border: 1px solid #e0e0dd;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--grey);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.tcard-quote {
+  color: var(--grey);
+  font-weight: 300;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tcard-sign {
+  display: block;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 0.45rem;
+}
+
+.tcard-role {
+  color: var(--grey-soft);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+/* ============================================================= footer */
+.footer {
+  position: relative;
+  width: 100vw;
+  min-height: 110vh;
+  overflow: hidden;
+  background: #1a1a1a;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  padding: 14vh 7vw 10vh;
+}
+
+.footer-emblem {
+  position: absolute;
+  right: -6%;
+  top: 46%;
+  transform: translateY(-50%);
+  width: 66vw;
+  z-index: 0;
+  opacity: 1;
+  pointer-events: none;
+  /* recolour the red emblem to a faint charcoal watermark just above the bg */
+  filter: brightness(0) invert(0.16);
+}
+
+.footer-grid {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: 4vw;
+  align-items: start;
+}
+
+.footer-logo {
+  width: 15vw;
+  max-width: 280px;
+  min-width: 180px;
+  height: auto;
+}
+
+.footer-blurb {
+  margin-top: 2.4vh;
+  color: #b6b6b6;
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.05vw, 1.25rem);
+  line-height: 1.5;
+  max-width: 30vw;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.1rem;
+  margin-top: 4.5vh;
+}
+
+.footer-socials a {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.footer-socials img {
+  max-width: 20px;
+  max-height: 20px;
+  width: auto;
+  height: auto;
+}
+
+.footer-socials a:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.6);
+}
+
+.footer-copy {
+  margin-top: 4vh;
+  padding-top: 3vh;
+  border-top: 1px solid #333;
+  color: #9a9a9a;
+  font-weight: 300;
+  font-size: clamp(0.78rem, 0.95vw, 1.1rem);
+  line-height: 1.5;
+}
+
+.footer-copy strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* info + contact columns start lower, aligned with the blurb */
+.footer-col {
+  padding-top: clamp(80px, 9vw, 150px);
+}
+
+.footer-col-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.35vw, 1.6rem);
+  margin-bottom: 3vh;
+}
+
+.footer-col-body {
+  color: #b6b6b6;
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.05vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 22vw;
+}
+
+.footer-address {
+  color: #b6b6b6;
+  font-style: normal;
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.05vw, 1.25rem);
+  line-height: 1.65;
+}
+
+.footer-phone {
+  display: block;
+  margin-top: 3.2vh;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.35vw, 1.6rem);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer-email {
+  display: block;
+  margin-top: 2.4vh;
+  color: #cfcfcf;
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.05vw, 1.25rem);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer-phone:hover,
+.footer-email:hover {
+  color: var(--red);
+}
+
+/* ============================================ mobile: new + reworked sections */
+@media (max-width: 768px) {
+  /* --- works: cleaner single-poster focus on mobile --- */
+  .works {
+    --cf-gap: 74vw;
+  }
+
+  .works-head {
+    top: 7%;
+  }
+
+  .works .cf-item {
+    top: 42%;
+  }
+
+  /* height-driven so the 4:5 poster keeps its ratio; width follows */
+  .works .cf-item img {
+    height: min(46vh, 118vw);
+    width: auto;
+    max-width: none;
+  }
+
+  .works-side {
+    top: 40%;
+  }
+
+  .works-controls {
+    bottom: 15.5vh !important;
+  }
+
+  /* client rail: a proper labelled strip, clearly separated from the stage */
+  .works-clients {
+    bottom: 4vh;
+    gap: 1.5rem;
+    padding: 0.7rem 5vw;
+    max-width: 100vw;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .works-clients::before {
+    content: 'Clients';
+    position: absolute;
+    left: 5vw;
+    top: -2.6vh;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--grey-soft);
+  }
+
+  .works-client {
+    height: 28px;
+  }
+
+  .works-client img {
+    max-width: 22vw;
+  }
+
+  .works-arrow-top,
+  .works-arrow-bottom {
+    display: none; /* too cramped to read on mobile */
+  }
+
+  /* --- testimonials --- */
+  .testimonials {
+    padding: 12vh 0 9vh;
+    gap: 5vh;
+  }
+
+  .testimonials-head {
+    padding: 0 5vw;
+    max-width: 100vw;
+  }
+
+  .testimonials-title {
+    font-size: clamp(1.65rem, 7.4vw, 2.2rem);
+  }
+
+  .testimonials-sub {
+    max-width: 90vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  .tmarquee-track {
+    gap: 5vw;
+    padding: 2vh 5vw;
+    animation-duration: 48s;
+  }
+
+  .tcard {
+    width: 78vw;
+    padding: 2rem 1.7rem 1.8rem;
+    gap: 1.1rem;
+  }
+
+  .tcard-avatar {
+    width: 54px;
+    height: 54px;
+    font-size: 0.95rem;
+  }
+
+  /* --- footer --- */
+  .footer {
+    padding: 11vh 6vw 7vh;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 6vh;
+  }
+
+  .footer-logo {
+    width: 52vw;
+    max-width: 260px;
+  }
+
+  .footer-blurb {
+    max-width: 88vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  .footer-col {
+    padding-top: 0;
+  }
+
+  .footer-col-body,
+  .footer-address {
+    max-width: 88vw;
+    font-size: clamp(0.85rem, 3.6vw, 1rem);
+  }
+
+  .footer-emblem {
+    width: 130vw;
+    right: -35%;
+    opacity: 0.85;
+  }
+}
+
+/* ================================================= hero red accent blobs ==== */
+.red-blob {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--red);
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* ink-blot black fill: grows from the cursor entry point, retracts to exit */
+.red-blob-fill {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #0d0d0d;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.62s cubic-bezier(0.34, 1.15, 0.4, 1);
+  filter: blur(1.4px);
+  pointer-events: none;
+}
+
+
+

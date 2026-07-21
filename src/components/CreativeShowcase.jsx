@@ -43,7 +43,6 @@ export default function CreativeShowcase({ heading, clients }) {
   return (
     <section className="works" ref={rootRef}>
       <img className="works-arrow-top" src="/assets/arrow_3.svg" alt="" aria-hidden="true" />
-      <img className="works-arrow-bottom" src="/assets/arrow_4.svg" alt="" aria-hidden="true" />
 
       <div className="works-head">
         <Heading lines={heading} active={seen} className="headline--brand" />
@@ -79,7 +78,8 @@ export default function CreativeShowcase({ heading, clients }) {
                 animate={{ opacity: visible ? (abs === 3 ? 0.55 : 1) : 0 }}
                 transition={{ duration: 0.5, delay: 0.06 * abs, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  transform: `translate(-50%, -50%) translateX(${d * 19}vw) scale(${d === 0 ? 1 : 0.6})`,
+                  // spacing via --cf-gap so mobile can widen the fan in CSS
+                  transform: `translate(-50%, -50%) translateX(calc(${d} * var(--cf-gap, 19vw))) scale(${d === 0 ? 1 : 0.6})`,
                   zIndex: 20 - abs,
                   pointerEvents: visible && d !== 0 ? 'auto' : 'none',
                 }}

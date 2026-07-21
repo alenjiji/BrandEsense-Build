@@ -30,9 +30,12 @@ const SHOTS = [
 
 const src = (name) => `/hoardings/${encodeURIComponent(name)}.webp`
 
-const half = Math.ceil(SHOTS.length / 2)
-const ROW_TOP = SHOTS.slice(0, half)
-const ROW_BOTTOM = SHOTS.slice(half)
+// Split by even/odd index rather than first-half/second-half. Any two
+// consecutive shots (e.g. the near-identical "NxYug8" / "NxYug8 (2)") land in
+// DIFFERENT rows, so a duplicate can never sit side by side — and each row's
+// own neighbours are non-consecutive originals too.
+const ROW_TOP = SHOTS.filter((_, i) => i % 2 === 0)
+const ROW_BOTTOM = SHOTS.filter((_, i) => i % 2 === 1)
 
 function Marquee({ items, dir, speed }) {
   // rendered twice — the animation travels one full copy then loops
