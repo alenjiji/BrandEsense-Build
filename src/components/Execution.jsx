@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import useInView from '../hooks/useInView.js'
+import useDragMarquee from '../hooks/useDragMarquee.js'
+import { WordReveal, Reveal } from './reveal.jsx'
 
 // "Execution in Focus" — two opposing marquees (top drifts left, bottom drifts
 // right) like a streaming-service shelf. Each track renders its set twice and
@@ -37,15 +39,15 @@ const src = (name) => `/hoardings/${encodeURIComponent(name)}.webp`
 const ROW_TOP = SHOTS.filter((_, i) => i % 2 === 0)
 const ROW_BOTTOM = SHOTS.filter((_, i) => i % 2 === 1)
 
-function Marquee({ items, dir, speed }) {
-  // rendered twice — the animation travels one full copy then loops
+function Marquee({ items, direction, speed, active }) {
+  // rendered twice — the strip travels one full copy then loops seamlessly.
+  // JS-driven so it can be grabbed and slid through (see useDragMarquee).
+  const trackRef = useRef(null)
+  useDragMarquee(trackRef, { speed, direction, active })
   const loop = [...items, ...items]
   return (
     <div className="mq">
-      <div
-        className={`mq-track mq-track--${dir}`}
-        style={{ animationDuration: `${speed}s` }}
-      >
+      <div className="mq-track is-drag" ref={trackRef}>
         {loop.map((name, i) => (
           <figure className="mq-item" key={`${name}-${i}`} data-cursor>
             <img
@@ -64,41 +66,27 @@ function Marquee({ items, dir, speed }) {
 }
 
 export default function Execution() {
-  const ref = useRef(null)
-  const [seen, setSeen] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return undefined
-    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), {
-      threshold: 0.05,
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, seen] = useInView({ amount: 0.15 })
 
   return (
-    <section className={`execution${seen ? ' is-live' : ''}`} ref={ref}>
+    <section className={`execution${seen ? ' is-live' : ''}`} id="execution" ref={ref}>
       <div className="execution-rails">
-        <Marquee items={ROW_TOP} dir="left" speed={64} />
-        <Marquee items={ROW_BOTTOM} dir="right" speed={72} />
+        <Marquee items={ROW_TOP} direction={1} speed={46} active={seen} />
+        <Marquee items={ROW_BOTTOM} direction={-1} speed={40} active={seen} />
       </div>
 
-      <motion.div
-        className="execution-copy"
-        initial={{ opacity: 0, y: 24 }}
-        animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <h2 className="execution-title">
-          <span className="is-red">Execution</span> in Focus
-        </h2>
-        <p className="execution-sub">
+      <div className="execution-copy">
+        <WordReveal
+          className="execution-title"
+          active={seen}
+          parts={[{ t: 'Execution', red: true }, { t: ' in Focus' }]}
+        />
+        <Reveal as="p" className="execution-sub" active={seen} delay={0.35} y={18}>
           Step into our world of complete in-house production. From towering outdoor hoardings to
           stunning still photography and cinematic video advertisements, explore how we deliver
           uncompromising quality.
-        </p>
-      </motion.div>
+        </Reveal>
+      </div>
     </section>
   )
 }

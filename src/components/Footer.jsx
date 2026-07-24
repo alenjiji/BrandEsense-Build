@@ -1,3 +1,6 @@
+import useInView from '../hooks/useInView.js'
+import { Reveal } from './reveal.jsx'
+
 const SOCIALS = [
   { id: 'instagram', href: 'https://instagram.com', label: 'Instagram' },
   { id: 'facebook', href: 'https://facebook.com', label: 'Facebook' },
@@ -5,9 +8,30 @@ const SOCIALS = [
   { id: 'linkedin', href: 'https://linkedin.com', label: 'LinkedIn' },
 ]
 
+// Footer quick links. `target` is a section id; `null` marks a page that
+// doesn't exist yet (Blogs) — the link renders but stays inert for now.
+const QUICK_LINKS = [
+  { label: 'Home', target: 'home' },
+  { label: 'About Us', target: 'about' },
+  { label: 'Portfolio', target: 'portfolio' },
+  { label: 'Services', target: 'services' },
+  { label: 'Blogs', target: null },
+]
+
 export default function Footer() {
+  const [ref, seen] = useInView({ amount: 0.2 })
+
+  const goTo = (e, target) => {
+    e.preventDefault()
+    if (!target) return // Blogs — page to be introduced later
+    const el = document.getElementById(target)
+    if (!el) return
+    if (window.__lenis) window.__lenis.scrollTo(el, { offset: -64 })
+    else el.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
-    <footer className="footer" id="contact">
+    <footer className="footer" id="contact" ref={ref}>
       <img
         className="footer-emblem"
         src="/video_section/brand_Essense_bg.svg"
@@ -18,7 +42,7 @@ export default function Footer() {
 
       <div className="footer-grid">
         {/* brand column */}
-        <div className="footer-brand">
+        <Reveal className="footer-brand" active={seen} delay={0.05} y={24}>
           <img
             className="footer-logo"
             src="/logo/logo_outline_2.svg"
@@ -27,8 +51,8 @@ export default function Footer() {
             draggable="false"
           />
           <p className="footer-blurb">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+            We sense the right strategy to harness your brand's full potential. 
+            Let's author your brand's next great chapter, together. Give us a call today!
           </p>
 
           <div className="footer-socials">
@@ -44,19 +68,24 @@ export default function Footer() {
             <br />
             <strong>Brandesense</strong>
           </p>
-        </div>
+        </Reveal>
 
         {/* information column */}
-        <div className="footer-col">
+        <Reveal className="footer-col" active={seen} delay={0.18} y={24}>
           <h3 className="footer-col-title">Information</h3>
-          <p className="footer-col-body">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-          </p>
-        </div>
+          <ul className="footer-links">
+            {QUICK_LINKS.map((l) => (
+              <li key={l.label}>
+                <a href={l.target ? `#${l.target}` : '#'} onClick={(e) => goTo(e, l.target)}>
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
         {/* contact column */}
-        <div className="footer-col">
+        <Reveal className="footer-col" active={seen} delay={0.3} y={24}>
           <h3 className="footer-col-title">Contact Us</h3>
           <address className="footer-address">
             Brand Esense
@@ -75,7 +104,7 @@ export default function Footer() {
           <a className="footer-email" href="mailto:info@brandesense.co.in">
             info@brandesense.co.in
           </a>
-        </div>
+        </Reveal>
       </div>
     </footer>
   )

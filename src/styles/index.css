@@ -153,6 +153,27 @@ img {
   font-weight: 500;
 }
 
+/* dark-background treatment — over the dark sections (showreel, about, footer)
+   the ink logo, links and burger flip to light so the navbar reads on every
+   background. The active link keeps red (legible on both), brightened a touch. */
+.nav-logo img,
+.nav-burger span {
+  transition: filter 0.3s ease, background 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+.nav-dark .nav-link {
+  color: rgba(255, 255, 255, 0.72);
+}
+.nav-dark .nav-link:hover {
+  color: #ffffff;
+}
+.nav-dark .nav-link.is-active {
+  color: #ff6a53;
+}
+.nav-dark .nav-burger span {
+  background: #ffffff;
+}
+
 /* ----------------------------------------------------------------- slide */
 .slide {
   position: relative;
@@ -1403,6 +1424,18 @@ img {
   margin-bottom: 0.9em;
 }
 
+/* hairline accent that wipes in beneath each service title */
+.service-rule {
+  display: block;
+  width: 2.4vw;
+  min-width: 34px;
+  height: 2px;
+  margin: -0.35em 0 0.85em;
+  background: var(--red);
+  transform-origin: left center;
+  will-change: transform;
+}
+
 .service-body {
   border-left: 1.5px solid #cfcfcd;
   padding-left: 1.2vw;
@@ -1641,6 +1674,22 @@ body.has-custom-cursor [data-cursor] {
    stays put and lifts. */
 .mq:hover .mq-track {
   animation-play-state: paused;
+}
+
+/* JS-driven, drag-to-slide tracks (hoardings + testimonials): the transform is
+   controlled from useDragMarquee, so the CSS keyframes must be off. `pan-y`
+   lets a vertical swipe still scroll the page while horizontal drags slide the
+   strip. */
+.is-drag {
+  animation: none !important;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.is-drag.is-grabbing {
+  cursor: grabbing;
 }
 
 .mq-item {
@@ -2313,54 +2362,60 @@ html.nav-drawer-open body {
   animation-play-state: paused;
 }
 
+/* Editorial testimonial card — flat, hairline-ruled, sharp-cornered to match
+   the rest of the site (no soft "bubble" box). A large red quote glyph carries
+   the brand accent; the attribution sits below a thin rule. */
 .tcard {
   flex: 0 0 auto;
-  width: clamp(270px, 23vw, 372px);
+  width: clamp(290px, 26vw, 420px);
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 34px 64px -36px rgba(0, 0, 0, 0.28);
-  padding: 2.3rem 2rem 2rem;
+  border: 1px solid #e7e6e1;
+  border-radius: 3px;
+  padding: 2.2rem 2.2rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1.2rem;
 }
 
-.tcard-avatar {
-  width: 62px;
-  height: 62px;
-  border-radius: 999px;
-  background: #eeeeec;
-  border: 1px solid #e0e0dd;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  color: var(--grey);
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+.tcard-mark {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 3.6rem;
+  line-height: 0.5;
+  height: 1.3rem;
+  color: var(--red);
+  user-select: none;
 }
 
 .tcard-quote {
+  flex: 1;
   color: var(--grey);
   font-weight: 300;
-  font-size: 0.92rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.62;
   margin: 0;
 }
 
-.tcard-sign {
-  display: block;
-  font-family: 'Dancing Script', cursive;
-  font-weight: 600;
-  font-size: 1.75rem;
+.tcard-by {
+  border-top: 1px solid #ecebe7;
+  padding-top: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tcard-name {
+  font-weight: 500;
   color: var(--ink);
-  line-height: 1;
-  margin-bottom: 0.45rem;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
 }
 
 .tcard-role {
-  color: var(--grey-soft);
+  color: var(--red);
   font-weight: 400;
-  font-size: 0.85rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 /* ============================================================= footer */
@@ -2484,6 +2539,28 @@ html.nav-drawer-open body {
   line-height: 1.65;
 }
 
+/* Information column quick links */
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+}
+
+.footer-links a {
+  display: inline-block;
+  color: #b6b6b6;
+  font-weight: 300;
+  font-size: clamp(0.82rem, 1.05vw, 1.25rem);
+  text-decoration: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.footer-links a:hover {
+  color: var(--red);
+  transform: translateX(4px);
+}
+
 .footer-phone {
   display: block;
   margin-top: 3.2vh;
@@ -2605,10 +2682,8 @@ html.nav-drawer-open body {
     gap: 1.1rem;
   }
 
-  .tcard-avatar {
-    width: 54px;
-    height: 54px;
-    font-size: 0.95rem;
+  .tcard-mark {
+    font-size: 3rem;
   }
 
   /* --- footer --- */
@@ -2676,3 +2751,101 @@ html.nav-drawer-open body {
 
 
 
+
+/* ===================================================== word-reveal headings === */
+.wr {
+  display: block;
+}
+
+.wr-word {
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* clip-path paints each word in left→right; the negative bottom inset keeps
+   descenders (g, p, y) from being clipped mid-reveal */
+.wr-inner {
+  display: inline-block;
+  will-change: clip-path, transform, filter;
+}
+
+.wr-inner.is-red {
+  color: var(--red);
+}
+
+/* reveal helpers that need layout hooks */
+.about-logo-wrap {
+  flex: 0 0 auto;
+}
+
+.video-title .vt-line {
+  display: block;
+}
+
+/* ============================================================ preloader */
+html.is-preloading,
+html.is-preloading body {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+
+.preloader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.8rem, 4vh, 3rem);
+  padding: 0 8vw;
+}
+
+.preloader-logo {
+  width: clamp(180px, 22vw, 300px);
+  height: auto;
+  display: block;
+}
+
+.preloader-meter {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  width: clamp(220px, 24vw, 340px);
+}
+
+.preloader-bar {
+  flex: 1;
+  height: 2px;
+  background: rgba(35, 31, 32, 0.12);
+  overflow: hidden;
+}
+
+.preloader-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--red);
+}
+
+.preloader-pct {
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--grey-soft);
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader-fill {
+    transition: none;
+  }
+}

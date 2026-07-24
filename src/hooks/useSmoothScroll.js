@@ -19,6 +19,13 @@ export default function useSmoothScroll() {
       overscroll: false,
     })
 
+    // Start pinned to the hero on (re)load — belt-and-braces with the manual
+    // scrollRestoration in main.jsx, since Lenis reads window scroll on init.
+    lenis.scrollTo(0, { immediate: true, force: true })
+
+    // expose for anchor navigation (navbar smooth-scrolls through Lenis)
+    window.__lenis = lenis
+
     const targets = () => document.querySelectorAll('[data-skew]')
     let current = 0
 
@@ -57,6 +64,7 @@ export default function useSmoothScroll() {
     return () => {
       cancelAnimationFrame(raf)
       clearInterval(idle)
+      if (window.__lenis === lenis) delete window.__lenis
       lenis.destroy()
       reset()
     }

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import useInView from '../hooks/useInView.js'
+import { Reveal, CountUp } from './reveal.jsx'
 
 const STATS = [
   { num: '25+', label: 'Years Experience' },
@@ -11,21 +11,10 @@ const STATS = [
 // Brand story + headline numbers. The copy runs across two ruled columns,
 // splitting mid-sentence exactly as the design does.
 export default function About() {
-  const ref = useRef(null)
-  const [seen, setSeen] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return undefined
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setSeen(true), {
-      threshold: 0.2,
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, seen] = useInView({ amount: 0.2 })
 
   return (
-    <section className="about" ref={ref}>
+    <section className="about" id="about" ref={ref}>
       <img
         className="about-emblem"
         src="/video_section/brand_Essense_bg.svg"
@@ -34,45 +23,44 @@ export default function About() {
         loading="lazy"
       />
 
-      <motion.div
-        className="about-top"
-        initial={{ opacity: 0, y: 22 }}
-        animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <img
-          className="about-logo"
-          src="/logo/logo_outline_2.svg"
-          alt="Brand Esense"
-          loading="lazy"
-          draggable="false"
-        />
+      <div className="about-top">
+        <Reveal className="about-logo-wrap" active={seen} y={0} duration={1}>
+          <img
+            className="about-logo"
+            src="/logo/logo_outline_2.svg"
+            alt="Brand Esense"
+            loading="lazy"
+            draggable="false"
+          />
+        </Reveal>
         <div className="about-cols">
-          <p className="about-col">
+          <Reveal as="p" className="about-col" active={seen} delay={0.2} y={22}>
             Born from the creative passion and visionary leadership of Prasad Yogi, Brand Esense is
             a hub of relentless innovation. We specialize in bridging the gap between traditional
-            advertising and cutting-edge digital marketing to
-          </p>
-          <p className="about-col">
-            give your brand a definitive edge. By combining deep strategic insights with bold
+            advertising and cutting-edge digital marketing to give your brand a definitive edge.
+          </Reveal>
+          <Reveal as="p" className="about-col" active={seen} delay={0.34} y={22}>
+            By combining deep strategic insights with bold
             creativity, our mission is to transform bold ideas into unforgettable visual stories
-            that drive real-world results
-          </p>
+            that drive real-world results.
+          </Reveal>
         </div>
-      </motion.div>
+      </div>
 
       <div className="about-stats">
         {STATS.map((s, i) => (
-          <motion.div
+          <Reveal
             className="stat"
             key={s.label}
-            initial={{ opacity: 0, y: 18 }}
-            animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ duration: 0.7, delay: seen ? 0.2 + i * 0.1 : 0, ease: [0.22, 1, 0.36, 1] }}
+            active={seen}
+            delay={0.35 + i * 0.12}
+            y={20}
           >
-            <span className="stat-num">{s.num}</span>
+            <span className="stat-num">
+              <CountUp value={s.num} active={seen} replay />
+            </span>
             <span className="stat-label">{s.label}</span>
-          </motion.div>
+          </Reveal>
         ))}
       </div>
     </section>

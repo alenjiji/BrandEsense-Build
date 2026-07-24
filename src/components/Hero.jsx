@@ -113,14 +113,36 @@ export default function Hero() {
     setIndex(n)
   }, [])
 
-  // auto-advance (paused while editing). `?freeze` also holds a slide.
+  // The carousel stays frozen on the intro until the Preloader has loaded AND
+  // decoded every hero image (it fires `assets-ready`). This guarantees no
+  // slide ever paints its pictures in one-by-one as we advance. A safety cap
+  // means a missing signal can't strand the hero.
+  const [ready, setReady] = useState(
+    () => typeof window !== 'undefined' && window.__assetsReady === true,
+  )
+  useEffect(() => {
+    if (ready || (typeof window !== 'undefined' && window.__assetsReady)) {
+      setReady(true)
+      return undefined
+    }
+    const onReady = () => setReady(true)
+    window.addEventListener('assets-ready', onReady)
+    const cap = setTimeout(() => setReady(true), 9500)
+    return () => {
+      window.removeEventListener('assets-ready', onReady)
+      clearTimeout(cap)
+    }
+  }, [ready])
+
+  // auto-advance (paused while editing, and until the hero imagery is ready).
+  // `?freeze` also holds a slide.
   const frozen =
     typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('freeze')
   useEffect(() => {
-    if (frozen || editMode) return undefined
+    if (frozen || editMode || !ready) return undefined
     const t = setTimeout(() => go(index + 1), slides[index].duration)
     return () => clearTimeout(t)
-  }, [index, frozen, editMode, go])
+  }, [index, frozen, editMode, ready, go])
 
   useEffect(() => {
     const el = heroRef.current
@@ -173,7 +195,7 @@ export default function Hero() {
   const showEditToggle = false
 
   return (
-    <section className={`hero${editMode ? ' is-editing' : ''}`} ref={heroRef}>
+    <section className={`hero${editMode ? ' is-editing' : ''}`} id="home" ref={heroRef}>
       <div className="hero-bg" />
       <div className="hero-bg-texture" />
 

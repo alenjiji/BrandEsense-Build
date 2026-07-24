@@ -1,39 +1,53 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import useInView from '../hooks/useInView.js'
+import useDragMarquee from '../hooks/useDragMarquee.js'
+import { WordReveal, Reveal } from './reveal.jsx'
 
 // "Words of Trust" — a single slow marquee of testimonial cards. It renders
 // the set twice and travels exactly -50% for a seamless loop, and pauses on
-// hover so a card can actually be read. No avatar assets were supplied, so
-// initials stand in for the photos (swap for images when available).
+// hover so a card can actually be read.
 const TESTIMONIALS = [
-  { name: 'Rahul Easwar', role: 'Lorem ipsum dolor' },
-  { name: 'Clara James', role: 'Lorem ipsum dolor' },
-  { name: 'Supriya Zak', role: 'Lorem ipsum dolor' },
-  { name: 'Jacob Steer', role: 'Lorem ipsum dolor' },
-  { name: 'Meera Nair', role: 'Lorem ipsum dolor' },
-  { name: 'David Chen', role: 'Lorem ipsum dolor' },
+  {
+    name: 'Mousam Abdhulrahiman',
+    role: 'Clinic7',
+    quote:
+      'Brand Esense completely transformed our digital presence. They truly earn trust by taking responsibility for their ultimate success. Their creative campaigns and social media management have been an absolute game-changer for Clinic7.',
+  },
+  {
+    name: 'Jobi Varghese',
+    role: 'i-Leaf Steel Doors',
+    quote:
+      'From dynamic videography to precise social media marketing, the team at Brand Esense delivered on every single front. We place our full confidence in their strategy, knowing they earn trust by taking responsibility for their ultimate success.',
+  },
+  {
+    name: 'Amjeth',
+    role: 'Minar Enterprises',
+    quote:
+      'We needed a team that could handle both creative strategy and flawless execution. Brand Esense delivered on all fronts, proving that their commitment to relentless innovation ensures their boldest visions become reality.',
+  },
+  {
+    name: 'Sankar',
+    role: 'HomeFresh Swamys',
+    quote:
+      'Brand Esense elevated our social media management and marketing effortlessly. The creative posts and videos they produce perfectly capture our brand identity, allowing our team to focus entirely on growing our brand.',
+  },
+  {
+    name: 'Bensy Sebastian',
+    role: 'Hair O Craft',
+    quote:
+      'Partnering with Brand Esense gave us access to comprehensive, 360-degree integrated marketing services. Their cinematic video advertisements and strategic execution perfectly captured the essence of Hair O Craft and elevated our market position.',
+  },
 ]
-
-const QUOTE =
-  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo'
-
-const initials = (name) =>
-  name
-    .split(' ')
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
 
 function Card({ t }) {
   return (
     <figure className="tcard" data-cursor>
-      <span className="tcard-avatar" aria-hidden="true">
-        {initials(t.name)}
+      <span className="tcard-mark" aria-hidden="true">
+        &ldquo;
       </span>
-      <blockquote className="tcard-quote">{QUOTE}</blockquote>
-      <figcaption>
-        <span className="tcard-sign">{t.name}</span>
+      <blockquote className="tcard-quote">{t.quote}</blockquote>
+      <figcaption className="tcard-by">
+        <span className="tcard-name">{t.name}</span>
         <span className="tcard-role">{t.role}</span>
       </figcaption>
     </figure>
@@ -41,38 +55,28 @@ function Card({ t }) {
 }
 
 export default function Testimonials() {
-  const ref = useRef(null)
-  const [seen, setSeen] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return undefined
-    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.08 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, seen] = useInView({ amount: 0.15 })
+  const trackRef = useRef(null)
+  useDragMarquee(trackRef, { speed: 30, direction: 1, active: seen })
 
   const loop = [...TESTIMONIALS, ...TESTIMONIALS]
 
   return (
-    <section className={`testimonials${seen ? ' is-live' : ''}`} ref={ref}>
-      <motion.div
-        className="testimonials-head"
-        initial={{ opacity: 0, y: 22 }}
-        animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <h2 className="testimonials-title">
-          Words of <span className="is-red">Trust</span>
-        </h2>
-        <p className="testimonials-sub">
+    <section className={`testimonials${seen ? ' is-live' : ''}`} id="testimonials" ref={ref}>
+      <div className="testimonials-head">
+        <WordReveal
+          className="testimonials-title"
+          active={seen}
+          parts={[{ t: 'Words of ' }, { t: 'Trust', red: true }]}
+        />
+        <Reveal as="p" className="testimonials-sub" active={seen} delay={0.35} y={18}>
           We believe the best measure of our success is the success of our clients. Here is what
           industry leaders have to say about their journey with Brand Esense.
-        </p>
-      </motion.div>
+        </Reveal>
+      </div>
 
       <div className="tmarquee">
-        <div className="tmarquee-track">
+        <div className="tmarquee-track is-drag" ref={trackRef}>
           {loop.map((t, i) => (
             <Card t={t} key={`${t.name}-${i}`} />
           ))}

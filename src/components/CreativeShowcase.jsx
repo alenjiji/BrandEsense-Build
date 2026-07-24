@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Heading from './Heading.jsx'
+import useInView from '../hooks/useInView.js'
 
 // Coverflow gallery with a client switcher. Picking a client swaps the whole
 // creative set — the stage cross-fades out and the new posters stagger back in.
@@ -11,8 +12,7 @@ export default function CreativeShowcase({ heading, clients }) {
   const n = creatives.length
 
   const [active, setActive] = useState(Math.floor(n / 2))
-  const rootRef = useRef(null)
-  const [seen, setSeen] = useState(false)
+  const [rootRef, seen] = useInView({ amount: 0.2 })
 
   const go = useCallback((dir) => setActive((a) => (a + dir + n) % n), [n])
 
@@ -30,18 +30,8 @@ export default function CreativeShowcase({ heading, clients }) {
     setActive(Math.floor(clients[i].creatives.length / 2))
   }
 
-  useEffect(() => {
-    const el = rootRef.current
-    if (!el) return undefined
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setSeen(true), {
-      threshold: 0.25,
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
   return (
-    <section className="works" ref={rootRef}>
+    <section className="works" id="works" ref={rootRef}>
       <img className="works-arrow-top" src="/assets/arrow_3.svg" alt="" aria-hidden="true" />
 
       <div className="works-head">

@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import useInView from '../hooks/useInView.js'
+import { WordReveal, Reveal } from './reveal.jsx'
+
+const EASE = [0.22, 1, 0.36, 1]
 
 const SERVICES = [
   {
@@ -29,47 +32,56 @@ const SERVICES = [
 ]
 
 export default function Services() {
-  const ref = useRef(null)
-  const [seen, setSeen] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return undefined
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setSeen(true), {
-      threshold: 0.15,
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [ref, seen] = useInView({ amount: 0.18 })
 
   return (
-    <section className="services" ref={ref}>
-      <motion.h2
+    <section className="services" id="services" ref={ref}>
+      <WordReveal
         className="services-title"
-        initial={{ opacity: 0, y: 20 }}
-        animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        Our <span className="is-red">Services</span>
-      </motion.h2>
+        active={seen}
+        parts={[{ t: 'Our ' }, { t: 'Services', red: true }]}
+      />
 
       <div className="services-grid" data-skew>
-        {SERVICES.map((s, i) => (
-          <motion.article
-            className="service"
-            key={s.title}
-            initial={{ opacity: 0, y: 22 }}
-            animate={seen ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-            transition={{
-              duration: 0.7,
-              delay: seen ? 0.12 + i * 0.08 : 0,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <h3 className="service-title">{s.title}</h3>
-            <p className="service-body">{s.body}</p>
-          </motion.article>
-        ))}
+        {SERVICES.map((s, i) => {
+          // Each card develops into focus (blur + rise + fade), unhurried and
+          // clearly staggered so it reads as you scroll past. A hairline accent
+          // wipes in beneath the title to give the reveal a deliberate beat.
+          const delay = seen ? 0.3 + i * 0.14 : 0
+          return (
+            <article className="service" key={s.title}>
+              <Reveal
+                as="h3"
+                className="service-title"
+                active={seen}
+                delay={delay}
+                y={22}
+                blur={8}
+                duration={1}
+              >
+                {s.title}
+              </Reveal>
+              <motion.span
+                className="service-rule"
+                aria-hidden="true"
+                initial={{ scaleX: 0 }}
+                animate={seen ? { scaleX: 1 } : { scaleX: 0 }}
+                transition={{ duration: 0.9, delay: delay + 0.18, ease: EASE }}
+              />
+              <Reveal
+                as="p"
+                className="service-body"
+                active={seen}
+                delay={delay + 0.16}
+                y={20}
+                blur={7}
+                duration={1.1}
+              >
+                {s.body}
+              </Reveal>
+            </article>
+          )
+        })}
       </div>
     </section>
   )
