@@ -96,7 +96,7 @@ export const slides = [
       [g('privileged')],
       [g('to have')],
       [g('worked with')],
-      [r('V Gaurd')],
+      [r('V Guard')],
       [r('Industries.')],
     ],
     desc: {
