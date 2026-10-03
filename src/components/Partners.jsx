@@ -4,10 +4,11 @@ import useInView from '../hooks/useInView.js'
 import { WordReveal, Reveal } from './reveal.jsx'
 
 // "Partners in progress" — the full client roster.
-// Explicit rows so the grouping and order match the design exactly (8/9/6/8);
-// each row spreads edge-to-edge, letting every mark keep its natural width.
+// Explicit rows so the grouping and order match the design exactly (5/9/6/8);
+// each full row spreads edge-to-edge, letting every mark keep its natural
+// width. The shorter first row is centred so its marks aren't over-stretched.
 const ROWS = [
-  ['metro', 'v-gaurd', 'synthite', 'clinic7', 'limitless', 'classy', 'gokulam', 'hair_and_Craft'],
+  ['clinic7', 'limitless', 'classy', 'gokulam', 'hair_and_Craft'],
   [
     'Pavizham',
     'royal arabian',

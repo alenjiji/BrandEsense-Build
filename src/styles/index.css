@@ -580,6 +580,13 @@ img {
   gap: 2vw;
 }
 
+/* the first row holds fewer marks — centre them with a comfortable gap so they
+   read as a group instead of being stretched across the full width */
+.partners-row:first-child {
+  justify-content: center;
+  gap: clamp(2.5vw, 4.5vw, 6vw);
+}
+
 .partner {
   display: flex;
   align-items: center;
